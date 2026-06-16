@@ -1,0 +1,29 @@
+# Node Modules
+server/node_modules
+client/node_modules
+
+# Environment Files
+server/.env
+client/.env
+
+# Logs
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode
+
+# Prisma
+server/prisma/dev.db
+server/prisma/dev.db-journal
+
+# Build Files
+server/dist
+client/.next
+client/out
+
+# Coverage
+coverage
