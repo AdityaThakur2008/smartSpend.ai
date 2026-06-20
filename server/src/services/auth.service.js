@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import prisma from "../lib/prisma.js";
 import AppError from "../utils/AppError.js";
+import { generateAccessToken } from "../utils/jwt.js";
 
 class AuthService {
   // Service methods for authentication logic
@@ -27,6 +28,31 @@ class AuthService {
       id: newUser.id,
       name: newUser.name,
       email: newUser.email,
+    };
+  }
+
+  async login(userData) {
+    // Implement login logic, e.g., verifying user credentials, generating JWT token
+    const user = await prisma.user.findUnique({
+      where: { email: userData.email },
+    });
+
+    if (!user) {
+      throw new AppError("Invalid email or password", 401);
+    }
+
+    const isMatch = await bcrypt.compare(userData.password, user.password);
+    if (!isMatch) {
+      throw new AppError("Invalid email or password", 401);
+    }
+
+    const accessToken = generateAccessToken(user);
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      accessToken,
     };
   }
 }

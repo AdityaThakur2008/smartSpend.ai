@@ -3,10 +3,12 @@ import cors from "cors";
 import apiCheckRouter from "./routes/apiCheck.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import authRouter from "./routes/auth.routes.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api", apiCheckRouter);
 app.use("/api/auth", authRouter);
