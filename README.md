@@ -19,13 +19,15 @@ An AI-powered personal finance management platform built with modern full-stack 
 
 ## ✨ Current Features
 
-- User Registration
-- User Login
 - JWT Authentication
-- HTTP Only Cookie Authentication
-- Protected Routes
-- Global Error Handling
-- Input Validation
+- Cookie-based Authentication
+- Transaction CRUD
+- Pagination
+- Filtering
+- Search
+- Zod Validation
+- Prisma ORM
+- PostgreSQL
 
 ## 📂 Project Structure
 
