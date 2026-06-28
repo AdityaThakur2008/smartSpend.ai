@@ -15,7 +15,7 @@ router.post(
   validate(TransactionSchema),
   TransactionController.createTransaction,
 );
-router.get("/", authMiddleware, TransactionController.getTransactionsByUserId);
+router.get("/", authMiddleware, TransactionController.getTransactions);
 router.get("/:id", authMiddleware, TransactionController.getTransactionById);
 router.patch(
   "/:id",

@@ -19,15 +19,18 @@ class TransactionController {
     });
   });
 
-  getTransactionsByUserId = asyncHandler(async (req, res) => {
+  getTransactions = asyncHandler(async (req, res) => {
     const userId = req.user.id;
+    const { page, limit, type, category, search } = req.query;
 
-    const transactions = await TransactionService.getTransactions(userId);
+    const filter = { userId, page, limit, type, category, search };
+
+    const result = await TransactionService.getTransactions(filter);
 
     return res.status(200).json({
       success: true,
       message: "Transactions retrieved successfully",
-      data: transactions,
+      result,
     });
   });
 
@@ -71,7 +74,7 @@ class TransactionController {
 
     const deletedTransaction = await TransactionService.deleteTransaction(
       transactionId,
-      userId
+      userId,
     );
 
     return res.status(200).json({

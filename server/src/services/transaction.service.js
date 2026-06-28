@@ -31,13 +31,33 @@ class TransactionService {
 
   // for get all transactions by user id
 
-  async getTransactions(userId) {
+  async getTransactions({ userId, page, limit, type, category, search }) {
+    const where = {
+      userId,
+      ...(type && { type }),
+      ...(category && { category }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: "insensitive" } },
+          { note: { contains: search, mode: "insensitive" } },
+        ],
+      }),
+    };
+
+    const totalCount = await prisma.transaction.count({ where });
+
+    const pageNumber = Math.max(1, parseInt(page) || 1);
+    const pageSize = Math.max(1, Math.min(50, parseInt(limit) || 10));
+    const skip = (pageNumber - 1) * pageSize;
+
     const transactions = await prisma.transaction.findMany({
-      where: { userId },
+      where,
       orderBy: { date: "desc" },
+      skip,
+      take: pageSize,
     });
 
-    return transactions.map((transaction) => ({
+    const data = transactions.map((transaction) => ({
       id: transaction.id,
       title: transaction.title,
       amount: transaction.amount,
@@ -46,6 +66,18 @@ class TransactionService {
       note: transaction.note,
       date: transaction.date,
     }));
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const pagination = {
+      totalCount,
+      totalPages,
+      currentPage: pageNumber,
+      pageSize,
+      hasNextPage: pageNumber < totalPages,
+      hasPreviousPage: pageNumber > 1,
+    };
+
+    return { data, pagination };
   }
 
   // for get transaction by id
@@ -118,8 +150,6 @@ class TransactionService {
       date: transaction.date,
     };
   }
-
-
 }
 
 export default new TransactionService();
