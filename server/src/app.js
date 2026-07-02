@@ -5,6 +5,7 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import transactionRouter from "./routes/transaction.routes.js";
+import dashboardRouter from "./routes/dashboard.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use("/api", apiCheckRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/transactions", transactionRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ success: true, message: "Server is running" });

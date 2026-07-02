@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma.js";
 import AppError from "../utils/appError.js";
+import { formatTransaction, formatTransactions } from "../utils/transactionFormatter.js";
 
 class TransactionService {
   // for create transaction
@@ -17,16 +18,8 @@ class TransactionService {
         userId,
       },
     });
-
-    return {
-      id: newTransaction.id,
-      title: newTransaction.title,
-      amount: newTransaction.amount,
-      type: newTransaction.type,
-      category: newTransaction.category,
-      note: newTransaction.note,
-      date: newTransaction.date,
-    };
+    const formattedTransaction = formatTransaction(newTransaction);
+    return formattedTransaction;
   }
 
   // for get all transactions by user id
@@ -45,7 +38,6 @@ class TransactionService {
     };
 
     const totalCount = await prisma.transaction.count({ where });
-
     const pageNumber = Math.max(1, parseInt(page) || 1);
     const pageSize = Math.max(1, Math.min(50, parseInt(limit) || 10));
     const skip = (pageNumber - 1) * pageSize;
@@ -57,15 +49,8 @@ class TransactionService {
       take: pageSize,
     });
 
-    const data = transactions.map((transaction) => ({
-      id: transaction.id,
-      title: transaction.title,
-      amount: transaction.amount,
-      type: transaction.type,
-      category: transaction.category,
-      note: transaction.note,
-      date: transaction.date,
-    }));
+    const data = formatTransactions(transactions);
+
 
     const totalPages = Math.ceil(totalCount / pageSize);
     const pagination = {
@@ -89,16 +74,11 @@ class TransactionService {
     if (!transaction) {
       throw new AppError("Transaction not found", 404);
     }
-    return {
-      id: transaction.id,
-      title: transaction.title,
-      amount: transaction.amount,
-      type: transaction.type,
-      category: transaction.category,
-      note: transaction.note,
-      date: transaction.date,
-    };
-  }
+
+    const formattedTransaction = formatTransaction(transaction);
+    return formattedTransaction;
+   }
+    
 
   // for update transaction
   async updateTransaction(transactionId, userId, updateData) {
@@ -115,15 +95,8 @@ class TransactionService {
       data: updateData,
     });
 
-    return {
-      id: updatedTransaction.id,
-      title: updatedTransaction.title,
-      amount: updatedTransaction.amount,
-      type: updatedTransaction.type,
-      category: updatedTransaction.category,
-      note: updatedTransaction.note,
-      date: updatedTransaction.date,
-    };
+    const formattedTransaction = formatTransaction(updatedTransaction);
+    return formattedTransaction;
   }
 
   // for delete transaction
@@ -140,15 +113,8 @@ class TransactionService {
       where: { id: transactionId },
     });
 
-    return {
-      id: transaction.id,
-      title: transaction.title,
-      amount: transaction.amount,
-      type: transaction.type,
-      category: transaction.category,
-      note: transaction.note,
-      date: transaction.date,
-    };
+    const formattedTransaction = formatTransaction(transaction);
+    return formattedTransaction;
   }
 }
 
