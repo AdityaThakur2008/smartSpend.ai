@@ -34,5 +34,20 @@ class  DashboardService {
             recentTransactions: formatTransactions(recentTransactions),
         };
     }
+
+    async summaryByCategory(userId) {
+        const summaryByCategory = await prisma.transaction.groupBy({
+            by: ['category'],
+            where: { userId , type: 'EXPENSE' },
+            _sum: { amount: true },
+            orderBy: { _sum: { amount: 'desc' } },
+        });
+
+        const formattedSummary = summaryByCategory.map((item) => ({
+            category: item.category,
+            totalAmount: item._sum.amount || 0,
+        }));
+        return formattedSummary;
+    }
 }
 export default new DashboardService();

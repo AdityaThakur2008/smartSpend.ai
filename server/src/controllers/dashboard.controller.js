@@ -15,6 +15,18 @@ class DashboardController {
       data: summary,
     });
   }
+
+    async getSummaryByCategory(req, res) {
+        const userId = req.user.id;
+
+        const summaryByCategory = await DashboardService.summaryByCategory(userId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Dashboard summary by category retrieved successfully",
+            data: summaryByCategory,
+        });
+    }
 }
 
 
